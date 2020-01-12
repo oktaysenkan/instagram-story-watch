@@ -6,10 +6,12 @@ import {
   StatusBar,
   Image,
   Dimensions,
+  TouchableOpacity,
+  Button
 } from 'react-native';
 import Video from 'react-native-video';
-
 import ProgressBar from '../atoms/progressbar';
+import Timer from '../../utils/Timer';
 
 export class StoryPage extends Component {
   constructor(props) {
@@ -21,9 +23,58 @@ export class StoryPage extends Component {
       owner: data.owner,
       stories: data.stories,
       currentIndex: 0,
-      currentStory: data.stories[1],
+      currentStory: data.stories[0],
+      paused: false,
     };
   }
+
+  componentDidMount() {
+    this.nextStoryEventHandler = new Timer(() => {
+      this.changeStory();
+    }, 5000);
+  }
+
+  componentWillUnmount() {
+    console.log('unmount');
+    this.nextStoryEventHandler = null;
+  }
+
+  onPress = () => {
+    const {paused} = this.state;
+    if (!paused) {
+      this.nextStoryEventHandler.pause();
+      this.setState({paused: true});
+    } else {
+      this.nextStoryEventHandler.resume();
+      this.setState({paused: false});
+    }
+  };
+
+  changeStory = () => {
+    const {stories, currentIndex} = this.state;
+    if (currentIndex === stories.length - 1) {
+      this.allStoriesWatched();
+      return;
+    }
+    const currentStory = stories[currentIndex + 1];
+    this.setState({
+      currentIndex: currentIndex + 1,
+      currentStory,
+    });
+
+    if (currentStory.type === 'image') {
+      this.nextStoryEventHandler.repeat();
+    }
+  };
+
+  onVideoEnd = () => {
+    this.changeStory();
+  };
+
+  allStoriesWatched = () => {
+    const {navigation} = this.props;
+    navigation.goBack();
+  };
 
   render() {
     const {stories, currentStory} = this.state;
@@ -34,11 +85,10 @@ export class StoryPage extends Component {
           <Image style={styles.media} source={{uri: currentStory.url}} />
         ) : (
           <Video
-            resizeMode="stretch"
-            source={{uri: currentStory.url}}
-            onBuffer={this.onBuffer}
-            onError={this.videoError}
             style={styles.media}
+            resizeMode="stretch"
+            onEnd={this.onVideoEnd}
+            source={{uri: currentStory.url}}
           />
         )}
         <View style={styles.statusBarWrapper}>
@@ -46,6 +96,10 @@ export class StoryPage extends Component {
             return <ProgressBar />;
           })}
         </View>
+
+        <TouchableOpacity onPress={this.onPress}>
+          <Text>PAUSE</Text>
+        </TouchableOpacity>
       </View>
     );
   }

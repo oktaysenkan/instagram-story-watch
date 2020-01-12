@@ -1,34 +1,48 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, StatusBar} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  StatusBar,
+  Image,
+  Dimensions,
+} from 'react-native';
+import Video from 'react-native-video';
+
 import ProgressBar from '../atoms/progressbar';
 
 export class StoryPage extends Component {
   constructor(props) {
     super(props);
 
+    const {navigation} = this.props;
+    const data = navigation.getParam('data', null);
     this.state = {
-      owner: {},
-      stories: [],
+      owner: data.owner,
+      stories: data.stories,
+      currentIndex: 0,
+      currentStory: data.stories[1],
     };
   }
 
-  componentDidMount() {
-    const {navigation} = this.props;
-    const data = navigation.getParam('data', null);
-    this.setState({
-      owner: data.owner,
-      stories: data.stories,
-    });
-    console.log(data.stories);
-  }
-
   render() {
-    const {stories} = this.state;
+    const {stories, currentStory} = this.state;
     return (
       <View style={styles.container}>
-        <StatusBar translucent={true} backgroundColor="transparent" />
-        <View style={styles.statusBar}>
-          {stories.map(story => {
+        <StatusBar hidden={true} />
+        {currentStory.type === 'image' ? (
+          <Image style={styles.media} source={{uri: currentStory.url}} />
+        ) : (
+          <Video
+            resizeMode="stretch"
+            source={{uri: currentStory.url}}
+            onBuffer={this.onBuffer}
+            onError={this.videoError}
+            style={styles.media}
+          />
+        )}
+        <View style={styles.statusBarWrapper}>
+          {stories.map((story, i) => {
             return <ProgressBar />;
           })}
         </View>
@@ -39,16 +53,26 @@ export class StoryPage extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 21,
-    paddingHorizontal: 10,
     backgroundColor: '#1544E3',
     width: '100%',
     height: '100%',
     display: 'flex',
+    paddingTop: 10,
+    paddingHorizontal: 10,
   },
-  statusBar: {
+  statusBarWrapper: {
     display: 'flex',
     flexDirection: 'row',
+  },
+  media: {
+    paddingTop: 10,
+    paddingHorizontal: 10,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    flex: 1,
   },
 });
 

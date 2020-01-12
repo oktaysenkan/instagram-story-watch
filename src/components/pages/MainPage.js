@@ -4,7 +4,6 @@ import Snackbar from '../organisms/snackbar';
 import UsernameInput from '../atoms/inputs';
 import ProgressBar from '../atoms/progressbar';
 
-
 export class MainPage extends Component {
   constructor(props) {
     super(props);

@@ -1,0 +1,37 @@
+import React, {Component} from 'react';
+import {StyleSheet, TextInput} from 'react-native';
+import {Fonts} from '../../../utils/Fonts';
+
+export class UsernameInput extends Component {
+  onSubmit = event => {
+    const {onSubmit} = this.props;
+    onSubmit(event.nativeEvent.text);
+    console.log(event.nativeEvent.text);
+  };
+
+  render() {
+    return (
+      <TextInput
+        style={styles.container}
+        placeholder="Username"
+        autoCorrect={false}
+        onSubmitEditing={this.onSubmit}>
+        {this.props.children}
+      </TextInput>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#ffffff',
+    width: '100%',
+    paddingVertical: 16,
+    paddingLeft: 20,
+    color: '#303030',
+    fontFamily: Fonts.ProductSansMedium,
+    fontSize: 14,
+  },
+});
+
+export default UsernameInput;

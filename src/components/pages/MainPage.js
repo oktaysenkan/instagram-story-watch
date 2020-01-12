@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, StatusBar} from 'react-native';
+import {View, StyleSheet, StatusBar} from 'react-native';
 import Snackbar from '../organisms/snackbar';
 import UsernameInput from '../atoms/inputs';
-import ProgressBar from '../atoms/progressbar';
 
 export class MainPage extends Component {
   constructor(props) {
@@ -15,7 +14,7 @@ export class MainPage extends Component {
   onSubmit = async username => {
     const {navigation} = this.props;
     const response = await fetch(
-      `http://192.168.2.113:3000/api/users/${username}/stories`,
+      `http://47.254.156.197:3000/api/users/${username}/stories`,
     );
     const data = await response.json();
     if (data.message) {

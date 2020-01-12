@@ -5,11 +5,12 @@ import {
   StyleSheet,
   StatusBar,
   Image,
-  TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import Video from 'react-native-video';
 import ProgressBar from '../atoms/progressbar';
 import Timer from '../../utils/Timer';
+import Screen from '../../utils/Screen';
 
 export class StoryPage extends Component {
   constructor(props) {
@@ -23,45 +24,58 @@ export class StoryPage extends Component {
       currentIndex: 0,
       currentStory: data.stories[0],
       paused: false,
+      loading: true,
     };
   }
 
   componentDidMount() {
-    this.nextStoryEventHandler = new Timer(() => {
-      this.changeStory();
-    }, 5000);
+    const {currentStory} = this.state;
+    if (currentStory.type === 'image') {
+      this.nextStoryEventHandler = new Timer(() => {
+        this.changeStory();
+      }, 5000);
+    }
   }
 
   componentWillUnmount() {
-    console.log('unmount');
     this.nextStoryEventHandler = null;
   }
 
   onTapStart = event => {
     const {locationX} = event.nativeEvent;
-    if (locationX > 50 && locationX < 360) {
+    const previousStoryArea = (Screen.width / 100) * 15;
+    const nextStoryArea = Screen.width - (Screen.width / 100) * 15;
+    if (locationX > previousStoryArea && locationX < nextStoryArea) {
+      console.log('Story paused');
+      this.nextStoryEventHandler.pause();
       this.setState({
         paused: true,
       });
-      this.nextStoryEventHandler.pause();
     }
   };
 
   onTapEnd = event => {
+    const {currentStory} = this.state;
     const {locationX} = event.nativeEvent;
-    if (locationX < 50) {
+    const previousStoryArea = (Screen.width / 100) * 15;
+    const nextStoryArea = Screen.width - (Screen.width / 100) * 15;
+    if (locationX < previousStoryArea) {
       this.changeStory('backward');
-    } else if (locationX > 360) {
+    } else if (locationX > nextStoryArea) {
       this.changeStory();
     } else {
       this.setState({
         paused: false,
       });
-      this.nextStoryEventHandler.resume();
+
+      if (currentStory.type === 'image') {
+        this.nextStoryEventHandler.resume();
+      }
     }
   };
 
   changeStory = (direction = 'forward') => {
+    console.log('Story Changed');
     const {stories, currentIndex} = this.state;
     let newIndex = null;
     let currentStory = null;
@@ -85,6 +99,7 @@ export class StoryPage extends Component {
     this.setState({
       currentIndex: newIndex,
       currentStory,
+      loading: true,
     });
 
     if (currentStory.type === 'image') {
@@ -93,7 +108,19 @@ export class StoryPage extends Component {
   };
 
   onVideoEnd = () => {
+    console.log('Video End');
     this.changeStory();
+  };
+
+  onVideoLoad = event => {
+    console.log('video loaded');
+    console.log(event);
+    this.setState({loading: false});
+  };
+
+  onImageLoad = () => {
+    console.log('image loaded');
+    this.setState({loading: false});
   };
 
   allStoriesWatched = () => {
@@ -102,7 +129,7 @@ export class StoryPage extends Component {
   };
 
   render() {
-    const {stories, currentStory} = this.state;
+    const {stories, currentStory, loading} = this.state;
     return (
       <View
         style={styles.container}
@@ -112,21 +139,33 @@ export class StoryPage extends Component {
         <StatusBar hidden={true} />
 
         {currentStory.type === 'image' ? (
-          <Image style={styles.media} source={{uri: currentStory.url}} />
+          <Image
+            style={styles.media}
+            onLoadEnd={this.onImageLoad}
+            source={{uri: currentStory.url}}
+          />
         ) : (
           <Video
             style={styles.media}
             resizeMode="stretch"
+            onLoad={this.onVideoLoad}
             paused={this.state.paused}
             onEnd={this.onVideoEnd}
             source={{uri: currentStory.url}}
           />
         )}
+
         <View style={styles.statusBarWrapper}>
           {stories.map((story, i) => {
             return <ProgressBar />;
           })}
         </View>
+
+        {loading && (
+          <View style={styles.loadingWrapper}>
+            <ActivityIndicator size="large" color="#444447" />
+          </View>
+        )}
       </View>
     );
   }
@@ -144,16 +183,20 @@ const styles = StyleSheet.create({
   statusBarWrapper: {
     display: 'flex',
     flexDirection: 'row',
+    zIndex: 3,
   },
   media: {
+    ...StyleSheet.absoluteFillObject,
     paddingTop: 10,
     paddingHorizontal: 10,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    flex: 1,
+  },
+  loadingWrapper: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#272727',
+    zIndex: 2,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

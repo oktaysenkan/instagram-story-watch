@@ -15,6 +15,7 @@ export class UsernameInput extends Component {
         style={styles.container}
         placeholder="Username"
         autoCorrect={false}
+        autoCapitalize="none"
         onSubmitEditing={this.onSubmit}>
         {this.props.children}
       </TextInput>

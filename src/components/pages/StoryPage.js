@@ -5,9 +5,7 @@ import {
   StyleSheet,
   StatusBar,
   Image,
-  Dimensions,
   TouchableOpacity,
-  Button
 } from 'react-native';
 import Video from 'react-native-video';
 import ProgressBar from '../atoms/progressbar';
@@ -39,26 +37,53 @@ export class StoryPage extends Component {
     this.nextStoryEventHandler = null;
   }
 
-  onPress = () => {
-    const {paused} = this.state;
-    if (!paused) {
+  onTapStart = event => {
+    const {locationX} = event.nativeEvent;
+    if (locationX > 50 && locationX < 360) {
+      this.setState({
+        paused: true,
+      });
       this.nextStoryEventHandler.pause();
-      this.setState({paused: true});
-    } else {
-      this.nextStoryEventHandler.resume();
-      this.setState({paused: false});
     }
   };
 
-  changeStory = () => {
+  onTapEnd = event => {
+    const {locationX} = event.nativeEvent;
+    if (locationX < 50) {
+      this.changeStory('backward');
+    } else if (locationX > 360) {
+      this.changeStory();
+    } else {
+      this.setState({
+        paused: false,
+      });
+      this.nextStoryEventHandler.resume();
+    }
+  };
+
+  changeStory = (direction = 'forward') => {
     const {stories, currentIndex} = this.state;
+    let newIndex = null;
+    let currentStory = null;
+
     if (currentIndex === stories.length - 1) {
       this.allStoriesWatched();
       return;
     }
-    const currentStory = stories[currentIndex + 1];
+
+    if (direction === 'forward') {
+      newIndex = currentIndex + 1;
+    } else {
+      newIndex = currentIndex - 1;
+      if (currentIndex === 0) {
+        return;
+      }
+    }
+
+    currentStory = stories[newIndex];
+
     this.setState({
-      currentIndex: currentIndex + 1,
+      currentIndex: newIndex,
       currentStory,
     });
 
@@ -79,14 +104,20 @@ export class StoryPage extends Component {
   render() {
     const {stories, currentStory} = this.state;
     return (
-      <View style={styles.container}>
+      <View
+        style={styles.container}
+        onStartShouldSetResponder={evt => true}
+        onTouchStart={this.onTapStart}
+        onTouchEnd={this.onTapEnd}>
         <StatusBar hidden={true} />
+
         {currentStory.type === 'image' ? (
           <Image style={styles.media} source={{uri: currentStory.url}} />
         ) : (
           <Video
             style={styles.media}
             resizeMode="stretch"
+            paused={this.state.paused}
             onEnd={this.onVideoEnd}
             source={{uri: currentStory.url}}
           />
@@ -96,10 +127,6 @@ export class StoryPage extends Component {
             return <ProgressBar />;
           })}
         </View>
-
-        <TouchableOpacity onPress={this.onPress}>
-          <Text>PAUSE</Text>
-        </TouchableOpacity>
       </View>
     );
   }

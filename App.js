@@ -1,44 +1,19 @@
-import React, {Component} from 'react';
-import {Text, View, StyleSheet, StatusBar} from 'react-native';
-import UsernameInput from './src/components/atoms/inputs';
-import Snackbar from './src/components/organisms/snackbar';
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+import MainPage from './src/components/pages/MainPage';
+import StoryPage from './src/components/pages/StoryPage';
 
-export class App extends Component {
-  onSubmit = text => {
-    console.log(text);
-  };
+const MainNavigator = createStackNavigator(
+  {
+    Home: {screen: MainPage},
+    StoryPage: {screen: StoryPage},
+  },
+  {
+    initialRouteName: 'Home',
+    headerMode: 'none',
+  },
+);
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <StatusBar translucent backgroundColor="transparent" />
-        <View style={styles.content}>
-          <UsernameInput onSubmit={this.onSubmit} />
-        </View>
-        <Snackbar>Error</Snackbar>
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#1544E3',
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-  },
-  content: {
-    flex: 1,
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  snackbar: {
-    backgroundColor: 'blue',
-  },
-});
+const App = createAppContainer(MainNavigator);
 
 export default App;

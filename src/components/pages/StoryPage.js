@@ -11,6 +11,10 @@ import Video from 'react-native-video';
 import ProgressBar from '../atoms/progressbar';
 import Timer from '../../utils/Timer';
 import Screen from '../../utils/Screen';
+import Avatar from '../atoms/avatar';
+import {Fonts} from '../../utils/Fonts';
+import Moment from '../../utils/Moment';
+import StoryInfo from '../organisms/StoryInfo';
 
 export class StoryPage extends Component {
   constructor(props) {
@@ -42,15 +46,18 @@ export class StoryPage extends Component {
   }
 
   onTapStart = event => {
+    const {currentStory} = this.state;
     const {locationX} = event.nativeEvent;
     const previousStoryArea = (Screen.width / 100) * 15;
     const nextStoryArea = Screen.width - (Screen.width / 100) * 15;
     if (locationX > previousStoryArea && locationX < nextStoryArea) {
       console.log('Story paused');
-      this.nextStoryEventHandler.pause();
       this.setState({
         paused: true,
       });
+      if (currentStory.type === 'image') {
+        this.nextStoryEventHandler.pause();
+      }
     }
   };
 
@@ -67,7 +74,6 @@ export class StoryPage extends Component {
       this.setState({
         paused: false,
       });
-
       if (currentStory.type === 'image') {
         this.nextStoryEventHandler.resume();
       }
@@ -85,13 +91,14 @@ export class StoryPage extends Component {
       return;
     }
 
-    if (direction === 'forward') {
-      newIndex = currentIndex + 1;
-    } else {
+    if (direction === 'backward') {
       newIndex = currentIndex - 1;
       if (currentIndex === 0) {
+        // Disable back on first story
         return;
       }
+    } else {
+      newIndex = currentIndex + 1;
     }
 
     currentStory = stories[newIndex];
@@ -108,18 +115,17 @@ export class StoryPage extends Component {
   };
 
   onVideoEnd = () => {
-    console.log('Video End');
+    console.log('Video end');
     this.changeStory();
   };
 
   onVideoLoad = event => {
-    console.log('video loaded');
-    console.log(event);
+    console.log('Video loaded');
     this.setState({loading: false});
   };
 
   onImageLoad = () => {
-    console.log('image loaded');
+    console.log('Image loaded');
     this.setState({loading: false});
   };
 
@@ -129,7 +135,7 @@ export class StoryPage extends Component {
   };
 
   render() {
-    const {stories, currentStory, loading} = this.state;
+    const {stories, currentStory, loading, owner} = this.state;
     return (
       <View
         style={styles.container}
@@ -161,6 +167,10 @@ export class StoryPage extends Component {
           })}
         </View>
 
+        <View style={styles.storyInfo}>
+          <StoryInfo story={currentStory} owner={owner} />
+        </View>
+
         {loading && (
           <View style={styles.loadingWrapper}>
             <ActivityIndicator size="large" color="#444447" />
@@ -173,7 +183,7 @@ export class StoryPage extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1544E3',
+    backgroundColor: '#444447',
     width: '100%',
     height: '100%',
     display: 'flex',
@@ -183,6 +193,9 @@ const styles = StyleSheet.create({
   statusBarWrapper: {
     display: 'flex',
     flexDirection: 'row',
+    zIndex: 3,
+  },
+  storyInfo: {
     zIndex: 3,
   },
   media: {

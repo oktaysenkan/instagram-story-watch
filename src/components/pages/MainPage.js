@@ -35,7 +35,7 @@ export class MainPage extends Component {
         <View style={styles.content}>
           <UsernameInput onSubmit={this.onSubmit} />
         </View>
-        {error && <Snackbar>{error}</Snackbar>}
+        <Snackbar message={error} duration={4000} />
       </View>
     );
   }

@@ -13,9 +13,11 @@ export class StoryInfo extends Component {
     };
     return (
       <View style={containerStyle}>
-        <Avatar url={owner.pictureUrl} />
-        <Text style={styles.avatarText}>{owner.username}</Text>
-        <Text style={styles.avatarText}>
+        <View style={styles.avatarWrapper}>
+          <Avatar url={owner.pictureUrl} />
+        </View>
+        <Text style={styles.username}>{owner.username}</Text>
+        <Text style={styles.time}>
           {Moment.getRelative(story.publishingDate)}
         </Text>
       </View>
@@ -29,15 +31,28 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
   },
-  avatarText: {
+  avatarWrapper: {
+    marginRight: 10,
+  },
+  username: {
     color: '#ffffff',
     fontSize: 12,
     textShadowColor: 'rgba(0, 0, 0, 0.4)',
-    textShadowOffset: {width: 0, height: 1},
-    textShadowRadius: 4,
-    marginLeft: 8,
-    lineHeight: 20,
+    textShadowOffset: {width: 0, height: 2},
+    textShadowRadius: 5,
+    marginLeft: 5,
+    lineHeight: 22,
     fontFamily: Fonts.ProductSansRegular,
+  },
+  time: {
+    color: '#EAEAEA',
+    fontSize: 12,
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+    textShadowOffset: {width: 0, height: 2},
+    textShadowRadius: 5,
+    marginLeft: 5,
+    lineHeight: 22,
+    fontFamily: Fonts.ProductSansMedium,
   },
 });
 

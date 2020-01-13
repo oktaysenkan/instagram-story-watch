@@ -3,12 +3,47 @@ import {Text, View, StyleSheet} from 'react-native';
 import {Fonts} from '../../../utils/Fonts';
 
 export class Snackbar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      visible: true,
+    };
+  }
+
+  componentWillReceiveProps() {
+    this.setTimer();
+    this.setState({visible: true});
+  }
+
+  componentDidMount() {
+    this.setTimer();
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
+
+  setTimer = () => {
+    const {duration} = this.props;
+    this.timer != null ? clearTimeout(this.timer) : null;
+    this.timer = setTimeout(() => {
+      this.setState({visible: false});
+      this.timer = null;
+    }, duration);
+  };
+
   render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>{this.props.children}</Text>
-      </View>
-    );
+    const {message} = this.props;
+    const {visible} = this.state;
+    if (message && visible) {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.text}>{message}</Text>
+        </View>
+      );
+    }
+    return null;
   }
 }
 

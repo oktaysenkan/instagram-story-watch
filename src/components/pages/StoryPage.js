@@ -15,6 +15,8 @@ import Avatar from '../atoms/avatar';
 import {Fonts} from '../../utils/Fonts';
 import Moment from '../../utils/Moment';
 import StoryInfo from '../organisms/StoryInfo';
+import LoadingScreen from '../organisms/LoadingScreen';
+import StoryPlayer from '../organisms/StoryPlayer';
 
 export class StoryPage extends Component {
   constructor(props) {
@@ -144,22 +146,14 @@ export class StoryPage extends Component {
         onTouchEnd={this.onTapEnd}>
         <StatusBar hidden={true} />
 
-        {currentStory.type === 'image' ? (
-          <Image
-            style={styles.media}
-            onLoadEnd={this.onImageLoad}
-            source={{uri: currentStory.url}}
-          />
-        ) : (
-          <Video
-            style={styles.media}
-            resizeMode="stretch"
-            onLoad={this.onVideoLoad}
-            paused={this.state.paused}
-            onEnd={this.onVideoEnd}
-            source={{uri: currentStory.url}}
-          />
-        )}
+        <StoryPlayer
+          type={currentStory.type}
+          onImageLoad={this.onImageLoad}
+          onVideoLoad={this.onVideoLoad}
+          paused={this.state.paused}
+          onVideoEnd={this.onVideoEnd}
+          source={{uri: currentStory.url}}
+        />
 
         <View style={styles.statusBarWrapper}>
           {stories.map((story, i) => {
@@ -167,15 +161,8 @@ export class StoryPage extends Component {
           })}
         </View>
 
-        <View style={styles.storyInfo}>
-          <StoryInfo story={currentStory} owner={owner} />
-        </View>
-
-        {loading && (
-          <View style={styles.loadingWrapper}>
-            <ActivityIndicator size="large" color="#444447" />
-          </View>
-        )}
+        <StoryInfo zIndex={3} story={currentStory} owner={owner} />
+        <LoadingScreen zIndex={2} hidden={!loading} />
       </View>
     );
   }
@@ -193,9 +180,6 @@ const styles = StyleSheet.create({
   statusBarWrapper: {
     display: 'flex',
     flexDirection: 'row',
-    zIndex: 3,
-  },
-  storyInfo: {
     zIndex: 3,
   },
   media: {

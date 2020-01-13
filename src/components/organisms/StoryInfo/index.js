@@ -6,9 +6,13 @@ import Moment from '../../../utils/Moment';
 
 export class StoryInfo extends Component {
   render() {
-    const {owner, story} = this.props;
+    const {owner, story, zIndex} = this.props;
+    const containerStyle = {
+      ...styles.container,
+      zIndex,
+    };
     return (
-      <View style={styles.container}>
+      <View style={containerStyle}>
         <Avatar url={owner.pictureUrl} />
         <Text style={styles.avatarText}>{owner.username}</Text>
         <Text style={styles.avatarText}>

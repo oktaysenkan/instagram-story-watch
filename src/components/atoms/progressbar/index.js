@@ -3,9 +3,14 @@ import {Text, View, StyleSheet} from 'react-native';
 
 export class ProgressBar extends Component {
   render() {
+    const {value} = this.props;
+    const progressBarStyle = {
+      ...styles.progressBar,
+      width: `${value}%`,
+    };
     return (
       <View style={styles.container}>
-        <View style={styles.progressBar} />
+        <View style={progressBarStyle} />
       </View>
     );
   }
@@ -21,7 +26,6 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: '100%',
-    width: '60%',
     backgroundColor: '#FFFFFF',
   },
 });

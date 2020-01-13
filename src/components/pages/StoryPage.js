@@ -20,23 +20,53 @@ export class StoryPage extends Component {
       currentStory: data.stories[0],
       paused: false,
       loading: true,
+      videoDuration: null,
+      watchTime: 0,
+      currentBarValue: 0,
     };
     this.previousStoryArea = (Screen.width / 100) * 15;
     this.nextStoryArea = Screen.width - (Screen.width / 100) * 15;
   }
 
   componentDidMount() {
-    const {currentStory} = this.state;
-    if (currentStory.type === 'image') {
-      this.nextStoryEventHandler = new Timer(() => {
-        this.changeStory();
-      }, 5000);
-    }
+    this.nextStoryEventHandler = new Timer(
+      this.onPhotoEnd,
+      7000,
+      this.timerTickEvent,
+      200,
+    );
   }
 
+  onPhotoEnd = () => {
+    const {currentStory} = this.state;
+    if (currentStory.type === 'image') {
+      this.changeStory();
+    }
+  };
+
   componentWillUnmount() {
+    this.nextStoryEventHandler.clear();
     this.nextStoryEventHandler = null;
   }
+
+  timerTickEvent = () => {
+    // eslint-disable-next-line prettier/prettier
+    const {watchTime, loading, currentStory, videoDuration, paused} = this.state;
+    if (!loading && !paused) {
+      let currentBarValue;
+      let newWatchTime;
+
+      newWatchTime = watchTime + 200;
+      if (currentStory.type === 'video') {
+        currentBarValue = Math.round(100 / (videoDuration / newWatchTime));
+      } else {
+        currentBarValue = Math.round(100 / (7000 / newWatchTime));
+      }
+
+      console.log(currentBarValue);
+      this.setState({watchTime: newWatchTime, currentBarValue});
+    }
+  };
 
   onTapStart = event => {
     const {currentStory} = this.state;
@@ -86,11 +116,14 @@ export class StoryPage extends Component {
     } else {
       newIndex = currentIndex + 1;
     }
+
     currentStory = stories[newIndex];
     this.setState({
       currentIndex: newIndex,
       currentStory,
       loading: true,
+      watchTime: 0,
+      currentBarValue: 0,
     });
     if (currentStory.type === 'image') {
       this.nextStoryEventHandler.repeat();
@@ -101,8 +134,8 @@ export class StoryPage extends Component {
     this.changeStory();
   };
 
-  onVideoLoad = () => {
-    this.setState({loading: false});
+  onVideoLoad = data => {
+    this.setState({loading: false, videoDuration: data.duration * 1000});
   };
 
   onImageLoad = () => {
@@ -115,7 +148,9 @@ export class StoryPage extends Component {
   };
 
   render() {
-    const {stories, currentStory, loading, owner} = this.state;
+    // eslint-disable-next-line prettier/prettier
+    const {stories, currentStory, loading, owner, currentIndex, currentBarValue} = this.state;
+    const finishedBars = currentIndex;
     return (
       <View
         style={styles.container}
@@ -133,7 +168,12 @@ export class StoryPage extends Component {
           source={{uri: currentStory.url}}
         />
 
-        <ProgressBarList zIndex={3} data={stories} />
+        <ProgressBarList
+          zIndex={3}
+          data={stories}
+          finishedBars={finishedBars}
+          currentBarValue={currentBarValue}
+        />
         <StoryInfo zIndex={3} story={currentStory} owner={owner} />
         <LoadingScreen zIndex={2} hidden={!loading} />
       </View>

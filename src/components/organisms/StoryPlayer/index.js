@@ -3,6 +3,10 @@ import {Text, View, StyleSheet, Image} from 'react-native';
 import Video from 'react-native-video';
 
 export class StoryPlayer extends Component {
+  deneme = a => {
+    console.log(a);
+  };
+
   render() {
     const {
       type,
@@ -25,6 +29,7 @@ export class StoryPlayer extends Component {
           paused={paused}
           onEnd={onVideoEnd}
           source={source}
+          onVideoProgress={this.deneme}
         />
       );
     } else {

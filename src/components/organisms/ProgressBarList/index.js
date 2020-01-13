@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, StyleSheet} from 'react-native';
-import ProgressBar from '../../atoms/progressbar';
+import {ProgressBar} from 'components';
 
 export class ProgressBarList extends Component {
   numberToArray = number => {

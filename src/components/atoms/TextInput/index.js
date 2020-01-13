@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {StyleSheet, TextInput} from 'react-native';
-import {Fonts} from '../../../utils/Fonts';
+import {StyleSheet, TextInput as Input} from 'react-native';
+import {Fonts} from 'utils';
 
-export class UsernameInput extends Component {
+export class TextInput extends Component {
   onSubmit = event => {
     const {onSubmit} = this.props;
     onSubmit(event.nativeEvent.text);
@@ -11,14 +11,14 @@ export class UsernameInput extends Component {
 
   render() {
     return (
-      <TextInput
+      <Input
         style={styles.container}
         placeholder="Username"
         autoCorrect={false}
         autoCapitalize="none"
         onSubmitEditing={this.onSubmit}>
         {this.props.children}
-      </TextInput>
+      </Input>
     );
   }
 }
@@ -43,4 +43,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UsernameInput;
+export default TextInput;

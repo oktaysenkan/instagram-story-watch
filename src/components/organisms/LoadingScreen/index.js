@@ -15,7 +15,6 @@ export class LoadingScreen extends Component {
         </View>
       );
     }
-
     return null;
   }
 }

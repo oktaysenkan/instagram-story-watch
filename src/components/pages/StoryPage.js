@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, StatusBar} from 'react-native';
-import Timer from '../../utils/Timer';
-import Screen from '../../utils/Screen';
-import StoryInfo from '../organisms/StoryInfo';
-import LoadingScreen from '../organisms/LoadingScreen';
-import StoryPlayer from '../organisms/StoryPlayer';
-import ProgressBarList from '../organisms/ProgressBarList';
+import {Timer, Screen} from 'utils';
+// eslint-disable-next-line prettier/prettier
+import {StoryInfo, LoadingScreen, StoryPlayer, ProgressBarList} from 'components';
 
 export class StoryPage extends Component {
   constructor(props) {
@@ -125,9 +122,6 @@ export class StoryPage extends Component {
       watchTime: 0,
       currentBarValue: 0,
     });
-    if (currentStory.type === 'image') {
-      this.nextStoryEventHandler.repeat();
-    }
   };
 
   onVideoEnd = () => {
@@ -140,6 +134,7 @@ export class StoryPage extends Component {
 
   onImageLoad = () => {
     this.setState({loading: false});
+    this.nextStoryEventHandler.repeat();
   };
 
   allStoriesWatched = () => {

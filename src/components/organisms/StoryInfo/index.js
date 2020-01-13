@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
-import Avatar from '../../atoms/avatar';
-import {Fonts} from '../../../utils/Fonts';
-import Moment from '../../../utils/Moment';
+import {Avatar} from 'components';
+import {Fonts, Moment} from 'utils';
 
 export class StoryInfo extends Component {
   render() {

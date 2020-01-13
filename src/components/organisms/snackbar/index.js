@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
-import {Fonts} from '../../../utils/Fonts';
+import {Fonts} from 'utils';
 
 export class Snackbar extends Component {
   constructor(props) {
@@ -11,7 +11,7 @@ export class Snackbar extends Component {
     };
   }
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     this.setTimer();
     this.setState({visible: true});
   }

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, StatusBar} from 'react-native';
-import Snackbar from '../organisms/snackbar';
-import UsernameInput from '../atoms/inputs';
+import {Snackbar, TextInput} from 'components';
 
 export class MainPage extends Component {
   constructor(props) {
@@ -33,7 +32,7 @@ export class MainPage extends Component {
       <View style={styles.container}>
         <StatusBar translucent={true} backgroundColor="transparent" />
         <View style={styles.content}>
-          <UsernameInput onSubmit={this.onSubmit} />
+          <TextInput onSubmit={this.onSubmit} />
         </View>
         <Snackbar message={error} duration={4000} />
       </View>

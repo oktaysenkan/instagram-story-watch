@@ -1,22 +1,11 @@
 import React, {Component} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  StatusBar,
-  Image,
-  ActivityIndicator,
-} from 'react-native';
-import Video from 'react-native-video';
-import ProgressBar from '../atoms/progressbar';
+import {View, StyleSheet, StatusBar} from 'react-native';
 import Timer from '../../utils/Timer';
 import Screen from '../../utils/Screen';
-import Avatar from '../atoms/avatar';
-import {Fonts} from '../../utils/Fonts';
-import Moment from '../../utils/Moment';
 import StoryInfo from '../organisms/StoryInfo';
 import LoadingScreen from '../organisms/LoadingScreen';
 import StoryPlayer from '../organisms/StoryPlayer';
+import ProgressBarList from '../organisms/ProgressBarList';
 
 export class StoryPage extends Component {
   constructor(props) {
@@ -32,6 +21,8 @@ export class StoryPage extends Component {
       paused: false,
       loading: true,
     };
+    this.previousStoryArea = (Screen.width / 100) * 15;
+    this.nextStoryArea = Screen.width - (Screen.width / 100) * 15;
   }
 
   componentDidMount() {
@@ -50,9 +41,7 @@ export class StoryPage extends Component {
   onTapStart = event => {
     const {currentStory} = this.state;
     const {locationX} = event.nativeEvent;
-    const previousStoryArea = (Screen.width / 100) * 15;
-    const nextStoryArea = Screen.width - (Screen.width / 100) * 15;
-    if (locationX > previousStoryArea && locationX < nextStoryArea) {
+    if (locationX > this.previousStoryArea && locationX < this.nextStoryArea) {
       console.log('Story paused');
       this.setState({
         paused: true,
@@ -66,11 +55,9 @@ export class StoryPage extends Component {
   onTapEnd = event => {
     const {currentStory} = this.state;
     const {locationX} = event.nativeEvent;
-    const previousStoryArea = (Screen.width / 100) * 15;
-    const nextStoryArea = Screen.width - (Screen.width / 100) * 15;
-    if (locationX < previousStoryArea) {
+    if (locationX < this.previousStoryArea) {
       this.changeStory('backward');
-    } else if (locationX > nextStoryArea) {
+    } else if (locationX > this.nextStoryArea) {
       this.changeStory();
     } else {
       this.setState({
@@ -83,16 +70,13 @@ export class StoryPage extends Component {
   };
 
   changeStory = (direction = 'forward') => {
-    console.log('Story Changed');
     const {stories, currentIndex} = this.state;
     let newIndex = null;
     let currentStory = null;
-
     if (currentIndex === stories.length - 1) {
       this.allStoriesWatched();
       return;
     }
-
     if (direction === 'backward') {
       newIndex = currentIndex - 1;
       if (currentIndex === 0) {
@@ -102,32 +86,26 @@ export class StoryPage extends Component {
     } else {
       newIndex = currentIndex + 1;
     }
-
     currentStory = stories[newIndex];
-
     this.setState({
       currentIndex: newIndex,
       currentStory,
       loading: true,
     });
-
     if (currentStory.type === 'image') {
       this.nextStoryEventHandler.repeat();
     }
   };
 
   onVideoEnd = () => {
-    console.log('Video end');
     this.changeStory();
   };
 
-  onVideoLoad = event => {
-    console.log('Video loaded');
+  onVideoLoad = () => {
     this.setState({loading: false});
   };
 
   onImageLoad = () => {
-    console.log('Image loaded');
     this.setState({loading: false});
   };
 
@@ -155,12 +133,7 @@ export class StoryPage extends Component {
           source={{uri: currentStory.url}}
         />
 
-        <View style={styles.statusBarWrapper}>
-          {stories.map((story, i) => {
-            return <ProgressBar />;
-          })}
-        </View>
-
+        <ProgressBarList zIndex={3} data={stories} />
         <StoryInfo zIndex={3} story={currentStory} owner={owner} />
         <LoadingScreen zIndex={2} hidden={!loading} />
       </View>
@@ -176,24 +149,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     paddingTop: 10,
     paddingHorizontal: 10,
-  },
-  statusBarWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    zIndex: 3,
-  },
-  media: {
-    ...StyleSheet.absoluteFillObject,
-    paddingTop: 10,
-    paddingHorizontal: 10,
-  },
-  loadingWrapper: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#272727',
-    zIndex: 2,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 

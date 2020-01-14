@@ -17,24 +17,24 @@ export class AnimatedProgressBar extends Component {
       return;
     }
 
-    if (this.props.start) {
-      console.log('yeni story süresi:', this.props.duration);
+    if (this.props.finishedBars !== prevProps.finishedBars) {
+      // Story Changed
+      this.duration = null;
+      barAnim.setValue(0);
+    }
+
+    if (!this.props.loading) {
+      // Story onLoad
       this.duration = this.duration ? this.duration : this.props.duration;
       this.startAnimate();
       return;
-    }
-
-    if (this.props.finishedBars !== prevProps.finishedBars) {
-      this.duration = null;
-      barAnim.setValue(0);
     }
   }
 
   startAnimate = () => {
     const {barAnim} = this.state;
-    console.log('started', barAnim._value);
     Animated.timing(barAnim, {
-      toValue: 110,
+      toValue: 100,
       duration: this.duration,
     }).start();
     this.startTime = new Date();
@@ -42,17 +42,21 @@ export class AnimatedProgressBar extends Component {
 
   pauseAnimate = () => {
     const {barAnim} = this.state;
-    console.log('paused', barAnim._value);
     this.duration -= new Date() - this.startTime;
-    console.log('remaining', this.duration);
     barAnim.setValue(barAnim._value);
   };
 
   render() {
     const progressBarStyle = {
       ...styles.progressBar,
-      transform: [{scaleX: this.state.barAnim}],
-      opacity: this.state.barAnim,
+      width: this.state.barAnim.interpolate({
+        inputRange: [0, 100],
+        outputRange: [0, 1],
+      }),
+      flex: this.state.barAnim.interpolate({
+        inputRange: [0, 100],
+        outputRange: [0, 1],
+      }),
     };
     return (
       <View style={styles.container}>
@@ -70,8 +74,7 @@ const styles = StyleSheet.create({
     height: 2,
     flex: 1,
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: 'row',
   },
   progressBar: {
     height: '100%',

@@ -133,8 +133,7 @@ export class StoryPage extends Component {
   };
 
   render() {
-    // eslint-disable-next-line prettier/prettier
-    const {stories, currentStory, loading, owner, currentIndex, currentBarValue} = this.state;
+    const {stories, currentStory, loading, owner, currentIndex} = this.state;
     const finishedBars = currentIndex;
     return (
       <View
@@ -154,7 +153,7 @@ export class StoryPage extends Component {
         <ProgressBarList
           zIndex={3}
           data={stories}
-          start={!this.state.loading}
+          loading={this.state.loading}
           paused={this.state.paused}
           finishedBars={finishedBars}
           duration={this.state.duration}

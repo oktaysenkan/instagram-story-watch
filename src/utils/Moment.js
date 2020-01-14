@@ -8,7 +8,7 @@ class Moment {
 }
 
 const config = () => {
-  moment.locale('en', {
+  moment.updateLocale('en', {
     relativeTime: {
       past: '%s',
       s: 's',

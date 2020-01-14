@@ -10,6 +10,7 @@ export class StoryPage extends Component {
 
     const {navigation} = this.props;
     const data = navigation.getParam('data', null);
+    this.tickRate = 200;
     this.state = {
       owner: data.owner,
       stories: data.stories,
@@ -17,24 +18,15 @@ export class StoryPage extends Component {
       currentStory: data.stories[0],
       paused: false,
       loading: true,
-      videoDuration: null,
-      watchTime: 0,
+      duration: null,
+      watchTime: this.tickRate,
       currentBarValue: 0,
     };
-    this.previousStoryArea = (Screen.width / 100) * 15;
-    this.nextStoryArea = Screen.width - (Screen.width / 100) * 15;
+    this.previousStoryArea = (Screen.width / 100) * 20;
+    this.nextStoryArea = Screen.width - (Screen.width / 100) * 20;
   }
 
-  componentDidMount() {
-    this.nextStoryEventHandler = new Timer(
-      this.onPhotoEnd,
-      7000,
-      this.timerTickEvent,
-      200,
-    );
-  }
-
-  onPhotoEnd = () => {
+  onImageEnd = () => {
     const {currentStory} = this.state;
     if (currentStory.type === 'image') {
       this.changeStory();
@@ -42,26 +34,21 @@ export class StoryPage extends Component {
   };
 
   componentWillUnmount() {
-    this.nextStoryEventHandler.clear();
-    this.nextStoryEventHandler = null;
+    this.storyEndHandler.clear();
+    this.storyEndHandler = null;
   }
 
   timerTickEvent = () => {
     // eslint-disable-next-line prettier/prettier
-    const {watchTime, loading, currentStory, videoDuration, paused} = this.state;
+    const {watchTime, loading, duration, paused} = this.state;
     if (!loading && !paused) {
       let currentBarValue;
       let newWatchTime;
 
-      newWatchTime = watchTime + 200;
-      if (currentStory.type === 'video') {
-        currentBarValue = Math.round(100 / (videoDuration / newWatchTime));
-      } else {
-        currentBarValue = Math.round(100 / (7000 / newWatchTime));
-      }
-
-      console.log(currentBarValue);
+      newWatchTime = watchTime + this.tickRate;
+      currentBarValue = Math.round(100 / (duration / newWatchTime));
       this.setState({watchTime: newWatchTime, currentBarValue});
+      console.log(currentBarValue);
     }
   };
 
@@ -74,7 +61,7 @@ export class StoryPage extends Component {
         paused: true,
       });
       if (currentStory.type === 'image') {
-        this.nextStoryEventHandler.pause();
+        this.storyEndHandler.pause();
       }
     }
   };
@@ -91,7 +78,7 @@ export class StoryPage extends Component {
         paused: false,
       });
       if (currentStory.type === 'image') {
-        this.nextStoryEventHandler.resume();
+        this.storyEndHandler.resume();
       }
     }
   };
@@ -100,7 +87,7 @@ export class StoryPage extends Component {
     const {stories, currentIndex} = this.state;
     let newIndex = null;
     let currentStory = null;
-    if (currentIndex === stories.length - 1) {
+    if (currentIndex === stories.length - 1 && direction === 'forward') {
       this.allStoriesWatched();
       return;
     }
@@ -128,13 +115,31 @@ export class StoryPage extends Component {
     this.changeStory();
   };
 
+  onStoryLoad = duration => {
+    if (!this.storyEndHandler) {
+      this.storyEndHandler = new Timer(
+        this.onImageEnd,
+        7000,
+        this.timerTickEvent,
+        this.tickRate,
+      );
+    } else {
+      this.storyEndHandler.repeat();
+    }
+
+    this.setState({
+      loading: false,
+      duration: duration,
+      watchTime: this.tickRate,
+    });
+  };
+
   onVideoLoad = data => {
-    this.setState({loading: false, videoDuration: data.duration * 1000});
+    this.onStoryLoad(data.duration * 1000);
   };
 
   onImageLoad = () => {
-    this.setState({loading: false});
-    this.nextStoryEventHandler.repeat();
+    this.onStoryLoad(7000);
   };
 
   allStoriesWatched = () => {
@@ -153,7 +158,6 @@ export class StoryPage extends Component {
         onTouchStart={this.onTapStart}
         onTouchEnd={this.onTapEnd}>
         <StatusBar hidden={true} />
-
         <StoryPlayer
           type={currentStory.type}
           onImageLoad={this.onImageLoad}
@@ -162,7 +166,6 @@ export class StoryPage extends Component {
           onVideoEnd={this.onVideoEnd}
           source={{uri: currentStory.url}}
         />
-
         <ProgressBarList
           zIndex={3}
           data={stories}

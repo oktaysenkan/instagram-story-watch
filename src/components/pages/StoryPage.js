@@ -10,7 +10,6 @@ export class StoryPage extends Component {
 
     const {navigation} = this.props;
     const data = navigation.getParam('data', null);
-    this.tickRate = 200;
     this.state = {
       owner: data.owner,
       stories: data.stories,
@@ -19,7 +18,6 @@ export class StoryPage extends Component {
       paused: false,
       loading: true,
       duration: null,
-      watchTime: this.tickRate,
       currentBarValue: 0,
     };
     this.previousStoryArea = (Screen.width / 100) * 20;
@@ -38,24 +36,13 @@ export class StoryPage extends Component {
     this.storyEndHandler = null;
   }
 
-  timerTickEvent = () => {
-    // eslint-disable-next-line prettier/prettier
-    const {watchTime, loading, duration, paused} = this.state;
-    if (!loading && !paused) {
-      let currentBarValue;
-      let newWatchTime;
-
-      newWatchTime = watchTime + this.tickRate;
-      currentBarValue = Math.round(100 / (duration / newWatchTime));
-      this.setState({watchTime: newWatchTime, currentBarValue});
-      console.log(currentBarValue);
-    }
-  };
-
   onTapStart = event => {
-    const {currentStory} = this.state;
+    const {currentStory, loading} = this.state;
     const {locationX} = event.nativeEvent;
     if (locationX > this.previousStoryArea && locationX < this.nextStoryArea) {
+      if (loading) {
+        return;
+      }
       console.log('Story paused');
       this.setState({
         paused: true,
@@ -67,13 +54,17 @@ export class StoryPage extends Component {
   };
 
   onTapEnd = event => {
-    const {currentStory} = this.state;
+    const {currentStory, loading} = this.state;
     const {locationX} = event.nativeEvent;
+
     if (locationX < this.previousStoryArea) {
       this.changeStory('backward');
     } else if (locationX > this.nextStoryArea) {
       this.changeStory();
     } else {
+      if (loading) {
+        return;
+      }
       this.setState({
         paused: false,
       });
@@ -106,7 +97,6 @@ export class StoryPage extends Component {
       currentIndex: newIndex,
       currentStory,
       loading: true,
-      watchTime: 0,
       currentBarValue: 0,
     });
   };
@@ -116,13 +106,9 @@ export class StoryPage extends Component {
   };
 
   onStoryLoad = duration => {
+    console.log('story süresi', duration);
     if (!this.storyEndHandler) {
-      this.storyEndHandler = new Timer(
-        this.onImageEnd,
-        7000,
-        this.timerTickEvent,
-        this.tickRate,
-      );
+      this.storyEndHandler = new Timer(this.onImageEnd, 7000);
     } else {
       this.storyEndHandler.repeat();
     }
@@ -130,7 +116,6 @@ export class StoryPage extends Component {
     this.setState({
       loading: false,
       duration: duration,
-      watchTime: this.tickRate,
     });
   };
 
@@ -169,8 +154,10 @@ export class StoryPage extends Component {
         <ProgressBarList
           zIndex={3}
           data={stories}
+          start={!this.state.loading}
+          paused={this.state.paused}
           finishedBars={finishedBars}
-          currentBarValue={currentBarValue}
+          duration={this.state.duration}
         />
         <StoryInfo zIndex={3} story={currentStory} owner={owner} />
         <LoadingScreen zIndex={2} hidden={!loading} />

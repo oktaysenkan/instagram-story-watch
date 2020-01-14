@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {ProgressBar} from 'components';
+import {ProgressBar, AnimatedProgressBar} from 'components';
+import {Screen} from 'utils';
 
 export class ProgressBarList extends Component {
   numberToArray = number => {
@@ -12,7 +13,7 @@ export class ProgressBarList extends Component {
   };
 
   render() {
-    const {data, zIndex, finishedBars, currentBarValue} = this.props;
+    const {data, zIndex, finishedBars, start, paused, duration} = this.props;
     let finishedBarArray = this.numberToArray(finishedBars);
     let remaingBarArray = this.numberToArray(data.length - finishedBars - 1);
     const style = {
@@ -24,7 +25,12 @@ export class ProgressBarList extends Component {
         {finishedBarArray.map((story, i) => {
           return <ProgressBar value={100} />;
         })}
-        <ProgressBar value={currentBarValue} />
+        <AnimatedProgressBar
+          start={start}
+          paused={paused}
+          duration={duration}
+          finishedBars={finishedBars}
+        />
         {remaingBarArray.map((story, i) => {
           return <ProgressBar value={0} />;
         })}

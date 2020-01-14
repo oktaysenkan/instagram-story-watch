@@ -1,5 +1,6 @@
 import Avatar from 'components/atoms/Avatar';
 import TextInput from 'components/atoms/TextInput';
+import AnimatedProgressBar from 'components/atoms/AnimatedProgressBar';
 import ProgressBar from 'components/atoms/ProgressBar';
 
 import LoadingScreen from 'components/organisms/LoadingScreen';
@@ -14,6 +15,7 @@ import StoryPage from 'components/pages/StoryPage';
 export {
   Avatar,
   TextInput,
+  AnimatedProgressBar,
   ProgressBar,
   LoadingScreen,
   ProgressBarList,

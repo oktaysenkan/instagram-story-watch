@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {Screen, Fonts} from 'utils';
 import Video from 'react-native-video';
+import PostInfo from 'components/monecules/PostInfo';
 
 /**
  * Post Component
@@ -59,21 +60,17 @@ export class Post extends Component {
               style={videoStyle}
               paused={this.state.paused}
               source={{uri: videoUrl}}
-              poster={source}
               onVideoLoadStart={this.videoLoad}
               resizeMode={'cover'}
+              poster={source}
               posterResizeMode={'cover'}
+              repeat={true}
             />
           </TouchableOpacity>
         ) : (
           <AutoHeightImage width={Screen.width} source={{uri: source}} />
         )}
-        <View style={styles.postDescription}>
-          <Text style={styles.postLike}>
-            {like ? `${like} Like` : `${preview} Preview`}
-          </Text>
-          {caption && <Text style={styles.postCaption}>{caption}</Text>}
-        </View>
+        <PostInfo caption={caption} like={like} preview={preview} />
       </View>
     );
   }

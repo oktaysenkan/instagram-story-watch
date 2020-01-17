@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
+import {View, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Avatar from 'components/atoms/Avatar';
 import {Fonts, Screen} from 'utils';

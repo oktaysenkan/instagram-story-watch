@@ -5,6 +5,7 @@ import Avatar from 'components/atoms/Avatar';
 import {Fonts, Screen} from 'utils';
 import ProfileInfo from 'components/organisms/ProfileInfo';
 import Post from 'components/organisms/Post';
+import PostList from 'components/organisms/PostList';
 
 export class ProfilePage extends Component {
   constructor(props) {
@@ -58,20 +59,7 @@ export class ProfilePage extends Component {
           {this.state.loading ? (
             <ActivityIndicator />
           ) : (
-            <View style={styles.posts}>
-              {this.state.posts.map(post => {
-                return (
-                  <Post
-                    dimensions={post.dimensions}
-                    caption={post.caption}
-                    like={post.like}
-                    preview={post.preview}
-                    source={post.displayUrl}
-                    videoUrl={post.videoUrl}
-                  />
-                );
-              })}
-            </View>
+            <PostList posts={this.state.posts} />
           )}
         </ScrollView>
       </View>

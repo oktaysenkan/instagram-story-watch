@@ -16,7 +16,7 @@ export class Post extends Component {
     preview: PropTypes.number,
     caption: PropTypes.string,
     videoUrl: PropTypes.string,
-    dimesions: PropTypes.array,
+    dimesions: PropTypes.object,
   };
 
   constructor(props) {
@@ -31,7 +31,7 @@ export class Post extends Component {
     this.setState({paused: !this.state.paused});
   };
 
-  calculateVideoSize = dimensions => {
+  calculateVideoHeight = dimensions => {
     const {width, height} = dimensions;
     if (width > height) {
       const percent = width / height;
@@ -49,7 +49,7 @@ export class Post extends Component {
     const {source, like, preview, caption, videoUrl, dimensions} = this.props;
     const videoStyle = {
       ...styles.postVideo,
-      ...this.calculateVideoSize(dimensions),
+      ...this.calculateVideoHeight(dimensions),
     };
     return (
       <View style={styles.post}>

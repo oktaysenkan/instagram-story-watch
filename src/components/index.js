@@ -1,6 +1,7 @@
-import Avatar from 'components/atoms/Avatar';
-import TextInput from 'components/atoms/TextInput';
 import AnimatedProgressBar from 'components/atoms/AnimatedProgressBar';
+import Avatar from 'components/atoms/Avatar';
+import LoadingWrapper from 'components/atoms/LoadingWrapper';
+import TextInput from 'components/atoms/TextInput';
 import ProgressBar from 'components/atoms/ProgressBar';
 
 import Snackbar from 'components/monecules/Snackbar';
@@ -20,9 +21,10 @@ import StoryPage from 'components/pages/StoryPage';
 
 export {
   // atoms
-  Avatar,
-  TextInput,
   AnimatedProgressBar,
+  Avatar,
+  LoadingWrapper,
+  TextInput,
   ProgressBar,
   // monecules
   Snackbar,

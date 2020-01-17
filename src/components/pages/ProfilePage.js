@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
-import {PostList, ProfileInfo} from 'components';
+import {View, StyleSheet, ScrollView} from 'react-native';
+import {PostList, ProfileInfo, LoadingWrapper} from 'components';
 
 export class ProfilePage extends Component {
   constructor(props) {
@@ -41,7 +41,9 @@ export class ProfilePage extends Component {
     } = this.state.profile;
     return (
       <View style={styles.container}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollView}>
           <ProfileInfo
             fullName={fullName}
             biography={biography}
@@ -52,7 +54,7 @@ export class ProfilePage extends Component {
             followingCount={followingCount}
           />
           {this.state.loading ? (
-            <ActivityIndicator />
+            <LoadingWrapper />
           ) : (
             <PostList posts={this.state.posts} />
           )}
@@ -67,6 +69,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#1544E3',
     paddingTop: 20,
     flex: 1,
+  },
+  scrollView: {
+    flexGrow: 1,
   },
 });
 

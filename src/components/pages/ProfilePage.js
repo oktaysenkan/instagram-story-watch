@@ -1,11 +1,6 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
-import AutoHeightImage from 'react-native-auto-height-image';
-import Avatar from 'components/atoms/Avatar';
-import {Fonts, Screen} from 'utils';
-import ProfileInfo from 'components/organisms/ProfileInfo';
-import Post from 'components/organisms/Post';
-import PostList from 'components/organisms/PostList';
+import {PostList, ProfileInfo} from 'components';
 
 export class ProfilePage extends Component {
   constructor(props) {
@@ -72,42 +67,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1544E3',
     paddingTop: 20,
     flex: 1,
-  },
-  posts: {
-    flex: 1,
-    backgroundColor: '#EAEAEA',
-  },
-  post: {
-    marginBottom: 10,
-  },
-  postImage: {
-    width: '100%',
-    height: 360,
-  },
-  postDescription: {
-    paddingLeft: 12,
-    paddingVertical: 18,
-    width: '100%',
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-    elevation: 1,
-  },
-  postLike: {
-    fontFamily: Fonts.ProductSansRegular,
-    fontSize: 12,
-    color: 'black',
-    marginBottom: 4,
-  },
-  postCaption: {
-    fontFamily: Fonts.ProductSansRegular,
-    fontSize: 12,
-    color: 'black',
   },
 });
 

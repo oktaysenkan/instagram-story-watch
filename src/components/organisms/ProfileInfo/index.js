@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
-import Avatar from 'components/atoms/Avatar';
+import {Avatar} from 'components';
 import {Fonts} from 'utils';
 
 /**

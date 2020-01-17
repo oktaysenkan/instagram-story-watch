@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
-import Post from 'components/organisms/Post';
+import {Post} from 'components';
 
 /**
  * PostList Component

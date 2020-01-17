@@ -4,7 +4,7 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import Avatar from 'components/atoms/Avatar';
 import {Fonts, Screen} from 'utils';
 import ProfileInfo from 'components/organisms/ProfileInfo';
-
+import Post from 'components/organisms/Post';
 
 export class ProfilePage extends Component {
   constructor(props) {
@@ -40,21 +40,15 @@ export class ProfilePage extends Component {
             followingCount={followingCount}
           />
           <View style={styles.posts}>
-            <View style={styles.post}>
-              <AutoHeightImage
-                width={Screen.width}
-                source={{
-                  uri:
-                    'https://instagram.fist7-2.fna.fbcdn.net/v/t51.2885-19/75654062_2749186051810079_3823034159211741184_n.jpg?_nc_ht=instagram.fist7-2.fna.fbcdn.net&_nc_ohc=zZfNApvWaAUAX-ked1y&oh=fad631ad9789d1b0cfd390d1797936e0&oe=5EB7F373',
-                }}
-              />
-              <View style={styles.postDescription}>
-                <Text style={styles.postLike}>23,145 Like</Text>
-                <Text style={styles.postCaption}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </Text>
-              </View>
-            </View>
+            <Post
+              caption={
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+              }
+              like={23145}
+              source={
+                'https://instagram.fist7-2.fna.fbcdn.net/v/t51.2885-19/75654062_2749186051810079_3823034159211741184_n.jpg?_nc_ht=instagram.fist7-2.fna.fbcdn.net&_nc_ohc=zZfNApvWaAUAX-ked1y&oh=fad631ad9789d1b0cfd390d1797936e0&oe=5EB7F373'
+              }
+            />
           </View>
         </ScrollView>
       </View>
@@ -67,54 +61,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1544E3',
     paddingTop: 20,
     flex: 1,
-  },
-  profile: {
-    padding: 20,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  fullName: {
-    marginTop: 15,
-    fontFamily: Fonts.ProductSansBold,
-    fontSize: 16,
-    color: 'white',
-  },
-  accountType: {
-    marginTop: 5,
-    fontFamily: Fonts.ProductSansRegular,
-    fontSize: 12,
-    color: 'white',
-  },
-  biography: {
-    marginTop: 5,
-    fontFamily: Fonts.ProductSansRegular,
-    fontSize: 12,
-    color: 'white',
-    width: 250,
-    textAlign: 'center',
-  },
-  infoWrapper: {
-    marginTop: 18,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    width: '100%',
-  },
-  info: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  infoField: {
-    fontFamily: Fonts.ProductSansRegular,
-    fontSize: 12,
-    color: 'white',
-  },
-  infoValue: {
-    fontFamily: Fonts.ProductSansBold,
-    fontSize: 12,
-    color: 'white',
   },
   posts: {
     flex: 1,

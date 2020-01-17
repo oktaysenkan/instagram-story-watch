@@ -114,7 +114,6 @@ export class StoryPage extends Component {
     }
 
     this.setState({
-      loading: false,
       duration: duration,
     });
   };
@@ -123,7 +122,12 @@ export class StoryPage extends Component {
     this.onStoryLoad(data.duration * 1000);
   };
 
+  onVideoReady = () => {
+    this.setState({loading: false});
+  };
+
   onImageLoad = () => {
+    this.setState({loading: false});
     this.onStoryLoad(7000);
   };
 
@@ -148,14 +152,15 @@ export class StoryPage extends Component {
           onVideoLoad={this.onVideoLoad}
           paused={this.state.paused}
           onVideoEnd={this.onVideoEnd}
+          onVideoReady={this.onVideoReady}
           source={{uri: currentStory.url}}
         />
         <ProgressBarList
           zIndex={3}
-          data={stories}
+          totalBars={stories.length}
+          finishedBars={finishedBars}
           loading={this.state.loading}
           paused={this.state.paused}
-          finishedBars={finishedBars}
           duration={this.state.duration}
         />
         <StoryInfo zIndex={3} story={currentStory} owner={owner} />

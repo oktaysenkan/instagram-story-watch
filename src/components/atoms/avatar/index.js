@@ -4,7 +4,7 @@ import {Image, StyleSheet} from 'react-native';
 export class Avatar extends Component {
   render() {
     const {url} = this.props;
-    return <Image style={styles.avatar} source={{uri: url}} />;
+    return <Image style={styles.avatar} source={{uri: url}} {...this.props} />;
   }
 }
 

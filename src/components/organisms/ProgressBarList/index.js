@@ -12,9 +12,16 @@ export class ProgressBarList extends Component {
   };
 
   render() {
-    const {data, zIndex, finishedBars, loading, paused, duration} = this.props;
+    const {
+      totalBars,
+      zIndex,
+      finishedBars,
+      loading,
+      paused,
+      duration,
+    } = this.props;
     let finishedBarArray = this.numberToArray(finishedBars);
-    let remaingBarArray = this.numberToArray(data.length - finishedBars - 1);
+    let remaingBarArray = this.numberToArray(totalBars - finishedBars - 1);
     const style = {
       ...styles.container,
       zIndex,

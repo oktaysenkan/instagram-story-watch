@@ -13,7 +13,7 @@ export class MainPage extends Component {
   onSubmit = async username => {
     const {navigation} = this.props;
     const response = await fetch(
-      `http://47.254.156.197:3000/api/users/${username}/profile`,
+      `http://192.168.2.113:3000/api/users/${username}/profile`,
     );
     const data = await response.json();
     if (data.message) {
@@ -21,7 +21,6 @@ export class MainPage extends Component {
       return;
     }
     this.setState({error: null});
-    console.log('saa');
     navigation.push('ProfilePage', {
       data: data,
     });

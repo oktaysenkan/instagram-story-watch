@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, ScrollView} from 'react-native';
+import {Text, View, StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Avatar from 'components/atoms/Avatar';
 import {Fonts, Screen} from 'utils';
@@ -14,7 +14,23 @@ export class ProfilePage extends Component {
     const data = navigation.getParam('data', null);
     this.state = {
       profile: data,
+      posts: [],
+      loading: true,
     };
+  }
+
+  getAllPosts = async () => {
+    const {username} = this.state.profile;
+    const response = await fetch(
+      `http://192.168.2.113:3000/api/users/${username}/posts`,
+    );
+    const data = await response.json();
+    console.log(data.posts.length);
+    this.setState({posts: data.posts, loading: false});
+  };
+
+  async componentDidMount() {
+    this.getAllPosts();
   }
 
   render() {
@@ -39,17 +55,24 @@ export class ProfilePage extends Component {
             followerCount={followerCount}
             followingCount={followingCount}
           />
-          <View style={styles.posts}>
-            <Post
-              caption={
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-              }
-              like={23145}
-              source={
-                'https://instagram.fist7-2.fna.fbcdn.net/v/t51.2885-19/75654062_2749186051810079_3823034159211741184_n.jpg?_nc_ht=instagram.fist7-2.fna.fbcdn.net&_nc_ohc=zZfNApvWaAUAX-ked1y&oh=fad631ad9789d1b0cfd390d1797936e0&oe=5EB7F373'
-              }
-            />
-          </View>
+          {this.state.loading ? (
+            <ActivityIndicator />
+          ) : (
+            <View style={styles.posts}>
+              {this.state.posts.map(post => {
+                return (
+                  <Post
+                    dimensions={post.dimensions}
+                    caption={post.caption}
+                    like={post.like}
+                    preview={post.preview}
+                    source={post.displayUrl}
+                    videoUrl={post.videoUrl}
+                  />
+                );
+              })}
+            </View>
+          )}
         </ScrollView>
       </View>
     );

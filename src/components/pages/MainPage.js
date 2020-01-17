@@ -20,6 +20,10 @@ export class MainPage extends Component {
       this.setState({error: data.message});
       return;
     }
+    if (data.isPrivate) {
+      this.setState({error: 'This account is private!'});
+      return;
+    }
     this.setState({error: null});
     navigation.push('ProfilePage', {
       data: data,

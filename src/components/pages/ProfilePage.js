@@ -13,17 +13,19 @@ export class ProfilePage extends Component {
       posts: [],
       stories: [],
       loading: true,
+      loadingNewPage: false,
     };
+    this.currentPage = 1;
   }
 
-  getAllPosts = async () => {
+  getPosts = async () => {
     const {username} = this.state.profile;
-    const response = await fetch(
-      `http://192.168.2.113:3000/api/users/${username}/posts`,
-    );
+    let url = `http://192.168.2.113:3000/api/users/${username}/posts?page=${this.currentPage}`;
+    const response = await fetch(url);
     const data = await response.json();
     console.log('Posts:', data.posts.length);
-    this.setState({posts: data.posts, loading: false});
+    const posts = this.state.posts.concat(data.posts);
+    this.setState({posts, loading: false, loadingNewPage: false});
   };
 
   getAllStories = async () => {
@@ -37,7 +39,7 @@ export class ProfilePage extends Component {
   };
 
   async componentDidMount() {
-    this.getAllPosts();
+    this.getPosts();
     this.getAllStories();
   }
 
@@ -49,6 +51,18 @@ export class ProfilePage extends Component {
         stories: this.state.stories,
       },
     });
+  };
+
+  onScroll = ({nativeEvent}) => {
+    if (this.isNearToHalf(nativeEvent) && this.state.loadingNewPage === false) {
+      this.currentPage++;
+      this.setState({loadingNewPage: true});
+      this.getPosts(this.currentPage);
+    }
+  };
+
+  isNearToHalf = ({layoutMeasurement, contentOffset, contentSize}) => {
+    return layoutMeasurement.height + contentOffset.y >= contentSize.height / 2;
   };
 
   render() {
@@ -66,7 +80,8 @@ export class ProfilePage extends Component {
       <View style={styles.container}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollView}>
+          contentContainerStyle={styles.scrollView}
+          onScroll={this.onScroll}>
           <ProfileInfo
             fullName={fullName}
             biography={biography}

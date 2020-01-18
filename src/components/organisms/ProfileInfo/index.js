@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import {Avatar} from 'components';
 import {Fonts} from 'utils';
@@ -17,6 +17,8 @@ export class ProfileInfo extends Component {
     mediaCount: PropTypes.number,
     followerCount: PropTypes.number,
     followingCount: PropTypes.number,
+    isHasStory: PropTypes.bool,
+    avatarOnPress: PropTypes.func,
   };
 
   render() {
@@ -28,10 +30,21 @@ export class ProfileInfo extends Component {
       mediaCount,
       followerCount,
       followingCount,
+      isHasStory,
+      avatarOnPress,
     } = this.props;
     return (
       <View style={styles.container}>
-        <Avatar height={60} width={60} borderRadius={60} url={pictureUrl} />
+        <TouchableOpacity onPress={avatarOnPress}>
+          <Avatar
+            height={60}
+            width={60}
+            borderRadius={60}
+            url={pictureUrl}
+            isHasStory={isHasStory}
+          />
+        </TouchableOpacity>
+
         <Text style={styles.fullName}>{fullName}</Text>
         <Text style={styles.accountType}>{category}</Text>
         <Text style={styles.biography}>{biography}</Text>

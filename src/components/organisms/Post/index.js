@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {Screen, Fonts} from 'utils';

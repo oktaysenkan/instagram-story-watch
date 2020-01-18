@@ -43,6 +43,7 @@ export class StoryPage extends Component {
       if (loading) {
         return;
       }
+      this.lastTapArea = 'middle';
       console.log('Story paused');
       this.setState({
         paused: true,
@@ -57,11 +58,7 @@ export class StoryPage extends Component {
     const {currentStory, loading} = this.state;
     const {locationX} = event.nativeEvent;
 
-    if (locationX < this.previousStoryArea) {
-      this.changeStory('backward');
-    } else if (locationX > this.nextStoryArea) {
-      this.changeStory();
-    } else {
+    if (this.lastTapArea === 'middle') {
       if (loading) {
         return;
       }
@@ -71,6 +68,11 @@ export class StoryPage extends Component {
       if (currentStory.type === 'image') {
         this.storyEndHandler.resume();
       }
+      this.lastTapArea = null;
+    } else if (locationX < this.previousStoryArea) {
+      this.changeStory('backward');
+    } else if (locationX > this.nextStoryArea) {
+      this.changeStory();
     }
   };
 

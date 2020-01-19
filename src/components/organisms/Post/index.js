@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import PropTypes from 'prop-types';
 import AutoHeightImage from 'react-native-auto-height-image';
 import {Screen, Fonts} from 'utils';
@@ -68,7 +68,7 @@ export class Post extends Component {
             />
           </TouchableOpacity>
         ) : (
-          <AutoHeightImage width={Screen.width} source={{uri: source}} />
+          <Image style={styles.postImage} source={{uri: source}} />
         )}
         <PostInfo caption={caption} like={like} preview={preview} />
       </View>
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   postImage: {
     width: '100%',
-    height: 360,
+    aspectRatio: 1,
   },
   postVideo: {
     width: '100%',

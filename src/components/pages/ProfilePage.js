@@ -15,16 +15,20 @@ export class ProfilePage extends Component {
       loading: true,
       loadingNewPage: false,
     };
-    this.currentPage = 1;
+    this.endCursor = null;
   }
 
   getPosts = async () => {
     const {username} = this.state.profile;
-    let url = `http://192.168.2.113:3000/api/users/${username}/posts?page=${this.currentPage}`;
+    const cursor = this.endCursor ? `"${this.endCursor}"` : null;
+    let url = encodeURI(
+      `http://192.168.2.113:3000/api/users/${username}/posts?after=${cursor}`,
+    );
     const response = await fetch(url);
     const data = await response.json();
     console.log('Posts:', data.posts.length);
     const posts = this.state.posts.concat(data.posts);
+    this.endCursor = data.pageInfo.endCursor;
     this.setState({posts, loading: false, loadingNewPage: false});
   };
 

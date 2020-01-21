@@ -16,9 +16,10 @@ export class PostList extends Component {
     const {posts} = this.props;
     return (
       <View style={styles.posts}>
-        {posts.map(post => {
+        {posts.map((post, i) => {
           return (
             <Post
+              key={i}
               dimensions={post.dimensions}
               caption={post.caption}
               like={post.like}

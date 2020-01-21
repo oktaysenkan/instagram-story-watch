@@ -29,7 +29,7 @@ export class ProgressBarList extends Component {
     return (
       <View style={style}>
         {finishedBarArray.map((story, i) => {
-          return <ProgressBar value={100} />;
+          return <ProgressBar key={i} value={100} />;
         })}
         <AnimatedProgressBar
           loading={loading}
@@ -38,7 +38,7 @@ export class ProgressBarList extends Component {
           finishedBars={finishedBars}
         />
         {remaingBarArray.map((story, i) => {
-          return <ProgressBar value={0} />;
+          return <ProgressBar key={i} value={0} />;
         })}
       </View>
     );
